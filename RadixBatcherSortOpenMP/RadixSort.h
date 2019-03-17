@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <time.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -51,3 +52,17 @@ void ArrayFill(int *arr, int size)
 		arr[i] = rand();
 }
 
+bool CheckResult(int *arr, int *tmp, int size)
+{
+	sort(tmp, tmp + size);
+
+	for (int i = 0; i < size; i++)
+	{
+		if (tmp[i] != arr[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
