@@ -65,3 +65,122 @@ bool CheckResult(vector<int> arr, vector<int> tmp, int size)
 		return true;
 	}
 }
+
+
+
+void EvenSplit(vector<int> arr, vector<int> tmp, int size1, int size2)
+{
+	for (int i = 0; i < size1; i++)
+	{
+		tmp.push_back(arr[i]);
+	}
+
+	vector<int> arr2;
+
+	for (int i = 0; i < size2; i++)
+	{
+		arr2.push_back(arr[size1 + i]);
+	}
+
+
+	int a = 0;
+	int b = 0;
+	int i = 0;
+
+	while ((a < size1) && (b < size2))
+	{
+		if (tmp[a] < arr2[b])
+		{
+			arr[i] = tmp[a];
+			a += 2;
+		}
+
+		else
+		{
+			arr[i] = arr2[b];
+			b += 2;
+		}
+
+		i += 2;
+	}
+
+	if (a == size1)
+		for (int j = b; j < size2; j += 2, i += 2)
+			arr[i] = arr2[j];
+	else
+		for (int j = a; j < size1; j += 2, i += 2)
+			arr[i] = tmp[j];
+}
+
+
+void OddSplit(vector<int> arr, vector<int> tmp, int size1, int size2)
+{
+
+	for (int i = 0; i < size1; i++)
+	{
+		tmp.push_back(arr[i]);
+	}
+
+	vector<int> arr2;
+
+	for (int i = 0; i < size2; i++)
+	{
+		arr2.push_back(arr[size1 + i]);
+	}
+
+	int a = 1;
+	int b = 1;
+	int i = 1;
+
+	while ((a < size1) && (b < size2))
+	{
+		if (tmp[a] < arr2[b])
+		{
+			arr[i] = tmp[a];
+			a += 2;
+		}
+
+		else
+		{
+			arr[i] = arr2[b];
+			b += 2;
+		}
+
+		i += 2;
+	}
+
+	if (a == size1)
+		for (int j = b; j < size2; j += 2, i += 2)
+			arr[i] = arr2[j];
+	else
+		for (int j = a; j<size1; j += 2, i += 2)
+			arr[i] = tmp[j];
+
+}
+
+
+void Comparator(vector<int> arr, int size)
+{
+	for (int i = 1; i < size; i++)
+		if (arr[i] < arr[i - 1])
+			swap(arr[i], arr[i - 1]);
+}
+
+void BatcherMerge(vector<int> arr1, vector<int> arr2, int size1, int size2)
+{
+	vector<int> res;
+	for (int i = 0; i < size1; i++)
+	{
+		res.push_back(arr1[i]);
+	}
+
+	for (int i = 0; i < size2; i++)
+	{
+		res.push_back(arr2[i]);
+	}
+
+	EvenSplit(res, arr1 /*tmp*/, size1, size2);
+	OddSplit(res, arr1 /*tmp*/, size1, size2);
+	Comparator(res, size1 + size2);
+
+}
