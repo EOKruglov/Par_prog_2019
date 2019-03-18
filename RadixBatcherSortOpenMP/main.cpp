@@ -2,16 +2,18 @@
 
 int main()
 {
-	int size = 10000;
+	int size = 1000000;
 
 	vector<int> arr(size);
 	vector<int> tmp(size);
+	SequentialSort ss;
+
 
 	ArrayFill(arr, size);
 
 	tmp = arr;
 
-	RadixSort(arr, size);
+	ss.RadixSort(arr, size);
 
 	if (CheckResult(arr, tmp, size))
 	{
