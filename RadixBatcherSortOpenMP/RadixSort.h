@@ -3,14 +3,14 @@
 #include <iostream>
 #include <time.h>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 
-void Radix(int byte, int size, int *sourceArr, int *destArr)
+void Radix(int byte, int size, vector<int> sourceArr, vector<int> destArr)
 {
-	int count[256];
-	int offset[256];
-	memset(count, 0, sizeof(count));
+	vector<int> count(256, 0);
+	vector<int> offset(256, 0);
 
 	for (int i = 0; i < size; i++)
 	{
@@ -34,35 +34,34 @@ void Radix(int byte, int size, int *sourceArr, int *destArr)
 	}
 }
 
-void RadixSort(int *sourceArr, int size)
+void RadixSort(vector<int> sourceArr, int size)
 {
-	int *temp = new int[size];
+	vector <int> temp(size);
 	Radix(0, size, sourceArr, temp);
 	Radix(1, size, temp, sourceArr);
 	Radix(2, size, sourceArr, temp);
 	Radix(3, size, temp, sourceArr);
-	delete[] temp;
 }
 
-void ArrayFill(int *arr, int size)
+void ArrayFill(vector<int> arr, int size)
 {
 	//srand(time(NULL));
 	srand(6);
 	for (int i = 0; i < size; i++)
-		arr[i] = rand();
+		arr.push_back(rand());
 }
 
-bool CheckResult(int *arr, int *tmp, int size)
+bool CheckResult(vector<int> arr, vector<int> tmp, int size)
 {
-	sort(tmp, tmp + size);
+	sort(tmp.begin(), tmp.end());
 
-	for (int i = 0; i < size; i++)
+	if (tmp != arr)
 	{
-		if (tmp[i] != arr[i])
-		{
-			return false;
-		}
+		return false;
 	}
 
-	return true;
+	else
+	{
+		return true;
+	}
 }

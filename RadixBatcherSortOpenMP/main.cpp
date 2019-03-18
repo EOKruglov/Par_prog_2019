@@ -2,19 +2,14 @@
 
 int main()
 {
-	int *arr;
-	int *tmp;
 	int size = 10000;
 
-	arr = new int[size];
-	tmp = new int[size];
+	vector<int> arr(size);
+	vector<int> tmp(size);
 
 	ArrayFill(arr, size);
 
-	for (int i = 0; i < size; i++)
-	{
-		tmp[i] = arr[i];
-	}
+	tmp = arr;
 
 	RadixSort(arr, size);
 
