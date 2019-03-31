@@ -1,3 +1,6 @@
 ﻿  main.cpp
+d:\vstudio\par_prog_2019\radixbatchersortopenmp\main.cpp(9): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+d:\vstudio\par_prog_2019\radixbatchersortopenmp\main.cpp(46): warning C4101: 'mergeNum': unreferenced local variable
+d:\vstudio\par_prog_2019\radixbatchersortopenmp\main.cpp(45): warning C4101: 'threadId': unreferenced local variable
   RadixBatcherSortOpenMP.vcxproj -> D:\Vstudio\Par_prog_2019\RadixBatcherSortOpenMP\Debug\RadixBatcherSortOpenMP.exe
   RadixBatcherSortOpenMP.vcxproj -> D:\Vstudio\Par_prog_2019\RadixBatcherSortOpenMP\Debug\RadixBatcherSortOpenMP.pdb (Full PDB)

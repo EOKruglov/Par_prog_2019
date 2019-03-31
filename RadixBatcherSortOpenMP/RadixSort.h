@@ -9,16 +9,16 @@ using namespace std;
 
 
 
-void ArrayFill(vector<int> arr, int size)
+void ArrayFill(vector<int> &arr, int size)
 {
 	//srand(time(NULL));
 	srand(6);
 	for (int i = 0; i < size; i++)
-		arr.push_back(rand());
+		arr[i] = rand() % 100 + 1;
 }
 
 
-bool CheckResult(vector<int> arr, vector<int> tmp, int size)
+bool CheckResult(vector<int> &arr, vector<int> &tmp, int size)
 {
 	sort(tmp.begin(), tmp.end());
 
@@ -38,7 +38,7 @@ class SequentialSort
 {
 public:
 
-	void Radix(int byte, int size, vector<int> sourceArr, vector<int> destArr)
+	void Radix(int byte, int size, vector<int> &sourceArr, vector<int> &destArr)
 	{
 		vector<int> count(256, 0);
 		vector<int> offset(256, 0);
@@ -65,7 +65,7 @@ public:
 		}
 	}
 
-	void RadixSort(vector<int> sourceArr, int size)
+	void RadixSort(vector<int> &sourceArr, int size)
 	{
 		vector <int> temp(size);
 		Radix(0, size, sourceArr, temp);
@@ -80,7 +80,9 @@ public:
 
 class OmpSort :SequentialSort
 {
-	void RadixSort(vector<int> sourceArr, int start, int finish)
+public:
+
+	void RadixSort(vector<int> &sourceArr, int start, int finish)
 	{
 		int _size = (finish - start) + 1;
 		vector<int> temp(_size);
@@ -104,18 +106,22 @@ class OmpSort :SequentialSort
 
 
 
-	void EvenSplit(vector<int> arr, vector<int> tmp, int size1, int size2)
+	void EvenSplit(vector<int> &arr, int start1, int finish1, int start2, int finish2)
 	{
+		int size1 = (finish1 - start1) + 1;
+		int size2 = (finish2 - start2) + 1;
+
+		vector<int> tmp;
+		vector<int> arr2;
+
 		for (int i = 0; i < size1; i++)
 		{
-			tmp.push_back(arr[i]);
+			tmp.push_back(arr[i + start1]);
 		}
-
-		vector<int> arr2;
 
 		for (int i = 0; i < size2; i++)
 		{
-			arr2.push_back(arr[size1 + i]);
+			arr2.push_back(arr[i + start2]);
 		}
 
 
@@ -127,13 +133,13 @@ class OmpSort :SequentialSort
 		{
 			if (tmp[a] < arr2[b])
 			{
-				arr[i] = tmp[a];
+				arr[i + start1] = tmp[a];
 				a += 2;
 			}
 
 			else
 			{
-				arr[i] = arr2[b];
+				arr[i + start1] = arr2[b];
 				b += 2;
 			}
 
@@ -142,26 +148,30 @@ class OmpSort :SequentialSort
 
 		if (a == size1)
 			for (int j = b; j < size2; j += 2, i += 2)
-				arr[i] = arr2[j];
+				arr[i + start1] = arr2[j];
 		else
 			for (int j = a; j < size1; j += 2, i += 2)
-				arr[i] = tmp[j];
+				arr[i + start1] = tmp[j];
 	}
 
 
-	void OddSplit(vector<int> arr, vector<int> tmp, int size1, int size2)
+	void OddSplit(vector<int> &arr, int start1, int finish1, int start2, int finish2)
 	{
+
+		int size1 = (finish1 - start1) + 1;
+		int size2 = (finish2 - start2) + 1;
+
+		vector<int> tmp;
+		vector<int> arr2;
 
 		for (int i = 0; i < size1; i++)
 		{
-			tmp.push_back(arr[i]);
+			tmp.push_back(arr[i + start1]);
 		}
-
-		vector<int> arr2;
 
 		for (int i = 0; i < size2; i++)
 		{
-			arr2.push_back(arr[size1 + i]);
+			arr2.push_back(arr[i + start2]);
 		}
 
 		int a = 1;
@@ -172,13 +182,13 @@ class OmpSort :SequentialSort
 		{
 			if (tmp[a] < arr2[b])
 			{
-				arr[i] = tmp[a];
+				arr[i + start1] = tmp[a];
 				a += 2;
 			}
 
 			else
 			{
-				arr[i] = arr2[b];
+				arr[i + start1] = arr2[b];
 				b += 2;
 			}
 
@@ -187,38 +197,33 @@ class OmpSort :SequentialSort
 
 		if (a == size1)
 			for (int j = b; j < size2; j += 2, i += 2)
-				arr[i] = arr2[j];
+				arr[i + start1] = arr2[j];
 		else
-			for (int j = a; j<size1; j += 2, i += 2)
-				arr[i] = tmp[j];
+			for (int j = a; j < size1; j += 2, i += 2)
+				arr[i + start1] = tmp[j];
 
 	}
 
 
-	void Comparator(vector<int> arr, int size)
+	void Comparator(vector<int> &arr, int start, int finish)
 	{
+		int size = (finish - start) + 1;
 		for (int i = 1; i < size; i++)
-			if (arr[i] < arr[i - 1])
-				swap(arr[i], arr[i - 1]);
+			if (arr[i + start] < arr[i + start - 1])
+				swap(arr[i + start], arr[i + start - 1]);
 	}
 
-	void BatcherMerge(vector<int> arr1, vector<int> arr2, int size1, int size2)
+	void BatcherMerge(vector<int> &arr, int start1, int finish1, int start2, int finish2)
 	{
-		vector<int> res;
-		for (int i = 0; i < size1; i++)
-		{
-			res.push_back(arr1[i]);
-		}
+		int size1 = (finish1 - start1) + 1;
+		int size2 = (finish2 - start2) + 1;
+		vector<int> res = arr;
+		
 
-		for (int i = 0; i < size2; i++)
-		{
-			res.push_back(arr2[i]);
-		}
-
-		EvenSplit(res, arr1 /*tmp*/, size1, size2);
-		OddSplit(res, arr1 /*tmp*/, size1, size2);
-		Comparator(res, size1 + size2);
-
+		EvenSplit(res, start1, finish1, start2, finish2);
+		OddSplit(res, start1, finish1, start2, finish2);
+		Comparator(res, start1, finish2);
+		arr = res;
 	}
 
 
