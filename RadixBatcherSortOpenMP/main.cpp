@@ -20,10 +20,16 @@ int main()
 
 	tmp = mainArr;
     arr = mainArr;
+	double t1, t2, dts, dtp;
 
+	t1 = omp_get_wtime();
 	ss.RadixSort(arr, size);
+	t2 = omp_get_wtime();
+	dts = t2 - t1;
 
-	if (CheckResult(arr, tmp, size))
+	sort(tmp.begin(), tmp.end());
+
+	if (CheckResult(arr, tmp))
 	{
 		cout << "Correct result for sequantial version" << endl;
 	}
@@ -33,12 +39,12 @@ int main()
 		cout << "Incorrect result for sequantial version" << endl;
 	}
 
+	cout << "Time = " << dts << " seconds" << endl;
+
 
 
 	/////////////////////////Omp version starts here////////////////////////////////////////
 
-
-	tmp = mainArr;
 	arr = mainArr;
 
 	int threadsNum = 4;
@@ -55,7 +61,7 @@ int main()
 #pragma omp parallel num_threads(threadsNum) shared(flag, coord, size, arr) private(threadId)
 	{
 		threadId = omp_get_thread_num();
-
+		int tail = 0;
 		int k = 0;
 		if (threadId == 0)
 		{
@@ -72,20 +78,30 @@ int main()
 
 			else
 			{
+				tail = threadsNum - (size % threadsNum);
+				int newSize = size + tail;
+				for (int i = 0; i < tail; i++)
+				{
+					arr.push_back(0xff);
+				}
+				coord[0][0] = 0;
+				coord[1][0] = newSize / threadsNum - 1;
+				for (int i = 1; i <= threadsNum - 1; i++)
+				{
+					coord[0][i] = coord[0][i - 1] + (newSize / threadsNum);
+					coord[1][i] = coord[1][i - 1] + (newSize / threadsNum);
+				}
 
 			}
 
 		}
-
+		t1 = omp_get_wtime();
 		os.RadixSort(arr, coord[0][threadId], coord[1][threadId]);
-	}
 
-#pragma omp parallel num_threads(threadsNum) shared(flag, coord, size, arr) private(threadId)
-	{
-		threadId = omp_get_thread_num();
+#pragma omp barrier
 		int m = 1;
 		int i = 0;
-		for(i; i < threadsNum/2; i++, m*=2)
+		for (i; i < threadsNum / 2; i++, m *= 2)
 		{
 			if ((threadId % (2 * m) == 0) && (threadsNum - threadId > m))
 			{
@@ -98,9 +114,17 @@ int main()
 
 #pragma omp barrier
 		}
+		t2 = omp_get_wtime();
+		if (tail != 0)
+		{
+			for (int j = 0; j < tail; j++)
+			{
+				arr.pop_back();
+			}
+		}
 	}
-	
-		if (CheckResult(arr, tmp, size))
+	dtp = t2 - t1;
+		if (CheckResult(arr, tmp))
 		{
 			cout << "Correct result for parallel version" << endl;
 		}
@@ -109,6 +133,9 @@ int main()
 		{
 			cout << "Incorrect result for parallel version" << endl;
 		}
+
+		cout << "Time = " << dtp << " seconds"<<endl;
+		cout << "Acceleration = " << dts / dtp <<endl;
 
 	return 0;
 }

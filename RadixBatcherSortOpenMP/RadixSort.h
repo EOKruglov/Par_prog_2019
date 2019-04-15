@@ -18,10 +18,8 @@ void ArrayFill(vector<int> &arr, int size)
 }
 
 
-bool CheckResult(vector<int> &arr, vector<int> &tmp, int size)
+bool CheckResult(vector<int> &arr, vector<int> &tmp)
 {
-	sort(tmp.begin(), tmp.end());
-
 	if (tmp != arr)
 	{
 		return false;
