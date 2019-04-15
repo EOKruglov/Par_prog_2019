@@ -5,7 +5,7 @@
 
 int main()
 {
-	int size = 12;
+	int size = 1000000;
 	srand(time(NULL));
 
 	vector<int> mainArr(size);
@@ -55,7 +55,7 @@ int main()
 #pragma omp parallel num_threads(threadsNum) shared(flag, coord, size, arr) private(threadId)
 	{
 		threadId = omp_get_thread_num();
-		
+
 		int k = 0;
 		if (threadId == 0)
 		{
@@ -78,27 +78,27 @@ int main()
 		}
 
 		os.RadixSort(arr, coord[0][threadId], coord[1][threadId]);
+	}
 
+#pragma omp parallel num_threads(threadsNum) shared(flag, coord, size, arr) private(threadId)
+	{
+		threadId = omp_get_thread_num();
 		int m = 1;
-		int n = 1;
-		for (int i = 0; i < threadsNum / 2; i++)
+		int i = 0;
+		for(i; i < threadsNum/2; i++, m*=2)
 		{
 			if ((threadId % (2 * m) == 0) && (threadsNum - threadId > m))
 			{
 
-				os.BatcherMerge(arr, coord[0][threadId], coord[1][threadId], coord[0][threadId + m],
-					coord[1][threadId + n]);
+				os.BatcherMerge(arr, coord[0][threadId * m], coord[1][threadId], coord[0][(threadId + 1) * m],
+					coord[1][threadId + (int)pow(2, i)]);
+
+				coord[1][threadId] = coord[1][(threadId + 1) * (int)pow(2, i)];
 			}
 
-			coord[1][threadId] = coord[1][threadId + m];
-
-			m *= 2;
-			n += 2;
+#pragma omp barrier
 		}
-
 	}
-
-	
 	
 		if (CheckResult(arr, tmp, size))
 		{
@@ -109,26 +109,6 @@ int main()
 		{
 			cout << "Incorrect result for parallel version" << endl;
 		}
-
-
-		for (int i = 0; i < size; i++)
-		{
-			cout << mainArr[i] << " ";
-		}
-		cout << endl;
-
-		for (int i = 0; i < size; i++)
-		{
-			cout << arr[i] << " ";
-		}
-		cout << endl;
-
-		for (int i = 0; i < size; i++)
-		{
-			cout << tmp[i] << " ";
-		}
-		cout << endl;
-
 
 	return 0;
 }

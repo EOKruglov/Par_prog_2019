@@ -215,15 +215,15 @@ public:
 
 	void BatcherMerge(vector<int> &arr, int start1, int finish1, int start2, int finish2)
 	{
-		int size1 = (finish1 - start1) + 1;
-		int size2 = (finish2 - start2) + 1;
-		vector<int> res = arr;
+		//int size1 = (finish1 - start1) + 1;
+		//int size2 = (finish2 - start2) + 1;
+		//vector<int> res = arr;
 		
 
-		EvenSplit(res, start1, finish1, start2, finish2);
-		OddSplit(res, start1, finish1, start2, finish2);
-		Comparator(res, start1, finish2);
-		arr = res;
+		EvenSplit(arr, start1, finish1, start2, finish2);
+		OddSplit(arr, start1, finish1, start2, finish2);
+		Comparator(arr, start1, finish2);
+		//arr = res;
 	}
 
 
