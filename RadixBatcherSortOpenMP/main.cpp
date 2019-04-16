@@ -5,7 +5,7 @@
 
 int main()
 {
-	int size = 1000000;
+	int size = 10000000;
 	srand(time(NULL));
 
 	vector<int> mainArr(size);
@@ -21,6 +21,8 @@ int main()
 	tmp = mainArr;
     arr = mainArr;
 	double t1, t2, dts, dtp;
+
+	cout << "Result for " << size << " elements" << endl;
 
 	t1 = omp_get_wtime();
 	ss.RadixSort(arr, size);
@@ -63,17 +65,18 @@ int main()
 		threadId = omp_get_thread_num();
 		int tail = 0;
 		int k = 0;
+
 		if (threadId == 0)
 		{
 			if (flag)
-			{
-				coord[0][0] = 0;
-				coord[1][0] = size / threadsNum - 1;
-				for (int i = 1; i <= threadsNum - 1; i++)
-				{
-					coord[0][i] = coord[0][i - 1] + (size / threadsNum);
-					coord[1][i] = coord[1][i - 1] + (size / threadsNum);
-				}
+			{	
+					coord[0][0] = 0;
+					coord[1][0] = size / threadsNum - 1;
+					for (int i = 1; i <= threadsNum - 1; i++)
+					{
+						coord[0][i] = coord[0][i - 1] + (size / threadsNum);
+						coord[1][i] = coord[1][i - 1] + (size / threadsNum);
+					}
 			}
 
 			else
@@ -136,6 +139,14 @@ int main()
 
 		cout << "Time = " << dtp << " seconds"<<endl;
 		cout << "Acceleration = " << dts / dtp <<endl;
+
+
+
+		/////////////////////////////TBB VERSION//////////////////////////////////////////
+
+
+
+
 
 	return 0;
 }
