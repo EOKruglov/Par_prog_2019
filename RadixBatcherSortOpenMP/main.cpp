@@ -1,28 +1,34 @@
 #include "RadixSort.h"
 #include <omp.h>
+#include "TbbVersionSort.h"
 
 
 
 int main()
 {
-	int size = 10000000;
+	int size = 16;
 	srand(time(NULL));
 
-	vector<int> mainArr(size);
-	vector<int> tmp(size);
-	vector<int> arr(size);
-
+	std::vector<int> mainArr(size);
+	std::vector<int> tmp(size);
+	std::vector<int> arr(size);
+	int *tbbArray = new int[size];
+	int *tbbTmp = new int[size];
 	SequentialSort ss;
 	OmpSort os;
 	
 	ArrayFill(mainArr, size);
 
-
+	for (int i = 0; i < size; i++)
+	{
+		tbbArray[i] = mainArr[i];
+		tbbTmp[i] = mainArr[i];
+	}
 	tmp = mainArr;
     arr = mainArr;
 	double t1, t2, dts, dtp;
 
-	cout << "Result for " << size << " elements" << endl;
+	std::cout << "Result for " << size << " elements" << std::endl;
 
 	t1 = omp_get_wtime();
 	ss.RadixSort(arr, size);
@@ -33,15 +39,15 @@ int main()
 
 	if (CheckResult(arr, tmp))
 	{
-		cout << "Correct result for sequantial version" << endl;
+		std::cout << "Correct result for sequantial version" << std::endl;
 	}
 
 	else
 	{
-		cout << "Incorrect result for sequantial version" << endl;
+		std::cout << "Incorrect result for sequantial version" << std::endl;
 	}
 
-	cout << "Time = " << dts << " seconds" << endl;
+	std::cout << "Time = " << dts << " seconds" << std::endl;
 
 
 
@@ -129,24 +135,58 @@ int main()
 	dtp = t2 - t1;
 		if (CheckResult(arr, tmp))
 		{
-			cout << "Correct result for parallel version" << endl;
+			std::cout << "Correct result for parallel version" << std::endl;
 		}
 	
 		else
 		{
-			cout << "Incorrect result for parallel version" << endl;
+			std::cout << "Incorrect result for parallel version" << std::endl;
 		}
 
-		cout << "Time = " << dtp << " seconds"<<endl;
-		cout << "Acceleration = " << dts / dtp <<endl;
+		std::cout << "Time = " << dtp << " seconds"<< std::endl;
+		std::cout << "Acceleration = " << dts / dtp << std::endl;
 
 
 
 		/////////////////////////////TBB VERSION//////////////////////////////////////////
+		
+		tbb::task_scheduler_init init(threadsNum);
 
+		t1 = omp_get_wtime();
+		ParallelSort& task = *new(tbb::task::allocate_root()) ParallelSort(tbbArray, tbbTmp, size, size / 100);
+		t2 = omp_get_wtime();
+		double tbbTime = t2 - t1;
 
+		bool tbbflag = true;
+		for (int i = 0; i < size; i++)
+		{
+			if (tbbArray[i] != tmp[i])
+			{
+				tbbflag = false;
+				break;
+			}
+		}
 
+		if (tbbflag)
+		{
+			std::cout << "Correct result for tbb version" << std::endl;
+		}
+		else
+		{
+			std::cout << "Incorrect result for tbb version" << std::endl;
+		}
 
-
+		std::cout << "Time = " << tbbTime << std::endl;
+		std::cout << "Acceleration = " << dts / tbbTime << std::endl;
+		for (int i = 0; i < size; i++)
+		{
+			std::cout << mainArr[i] << " ";
+		}
+		std::cout << std::endl;
+		for (int i = 0; i < size; i++)
+		{
+			std::cout << tbbArray[i] <<" ";
+		}
+		std::cout << std::endl;
 	return 0;
 }

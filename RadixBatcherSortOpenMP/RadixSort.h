@@ -5,11 +5,8 @@
 #include <algorithm>
 #include <vector>
 
-using namespace std;
 
-
-
-void ArrayFill(vector<int> &arr, int size)
+void ArrayFill(std::vector<int> &arr, int size)
 {
 	//srand(time(NULL));
 	srand(6);
@@ -18,7 +15,7 @@ void ArrayFill(vector<int> &arr, int size)
 }
 
 
-bool CheckResult(vector<int> &arr, vector<int> &tmp)
+bool CheckResult(std::vector<int> &arr, std::vector<int> &tmp)
 {
 	if (tmp != arr)
 	{
@@ -36,10 +33,10 @@ class SequentialSort
 {
 public:
 
-	void Radix(int byte, int size, vector<int> &sourceArr, vector<int> &destArr)
+	void Radix(int byte, int size, std::vector<int> &sourceArr, std::vector<int> &destArr)
 	{
-		vector<int> count(256, 0);
-		vector<int> offset(256, 0);
+		std::vector<int> count(256, 0);
+		std::vector<int> offset(256, 0);
 
 		for (int i = 0; i < size; i++)
 		{
@@ -63,9 +60,9 @@ public:
 		}
 	}
 
-	void RadixSort(vector<int> &sourceArr, int size)
+	void RadixSort(std::vector<int> &sourceArr, int size)
 	{
-		vector <int> temp(size);
+		std::vector <int> temp(size);
 		Radix(0, size, sourceArr, temp);
 		Radix(1, size, temp, sourceArr);
 		Radix(2, size, sourceArr, temp);
@@ -80,11 +77,11 @@ class OmpSort :SequentialSort
 {
 public:
 
-	void RadixSort(vector<int> &sourceArr, int start, int finish)
+	void RadixSort(std::vector<int> &sourceArr, int start, int finish)
 	{
 		int _size = (finish - start) + 1;
-		vector<int> temp(_size);
-		vector<int> buffer_array;
+		std::vector<int> temp(_size);
+		std::vector<int> buffer_array;
 
 		for (int i = 0; i < _size; i++)
 		{
@@ -104,13 +101,13 @@ public:
 
 
 
-	void EvenSplit(vector<int> &arr, int start1, int finish1, int start2, int finish2)
+	void EvenSplit(std::vector<int> &arr, int start1, int finish1, int start2, int finish2)
 	{
 		int size1 = (finish1 - start1) + 1;
 		int size2 = (finish2 - start2) + 1;
 
-		vector<int> tmp;
-		vector<int> arr2;
+		std::vector<int> tmp;
+		std::vector<int> arr2;
 
 		for (int i = 0; i < size1; i++)
 		{
@@ -153,14 +150,14 @@ public:
 	}
 
 
-	void OddSplit(vector<int> &arr, int start1, int finish1, int start2, int finish2)
+	void OddSplit(std::vector<int> &arr, int start1, int finish1, int start2, int finish2)
 	{
 
 		int size1 = (finish1 - start1) + 1;
 		int size2 = (finish2 - start2) + 1;
 
-		vector<int> tmp;
-		vector<int> arr2;
+		std::vector<int> tmp;
+		std::vector<int> arr2;
 
 		for (int i = 0; i < size1; i++)
 		{
@@ -203,15 +200,15 @@ public:
 	}
 
 
-	void Comparator(vector<int> &arr, int start, int finish)
+	void Comparator(std::vector<int> &arr, int start, int finish)
 	{
 		int size = (finish - start) + 1;
 		for (int i = 1; i < size; i++)
 			if (arr[i + start] < arr[i + start - 1])
-				swap(arr[i + start], arr[i + start - 1]);
+				std::swap(arr[i + start], arr[i + start - 1]);
 	}
 
-	void BatcherMerge(vector<int> &arr, int start1, int finish1, int start2, int finish2)
+	void BatcherMerge(std::vector<int> &arr, int start1, int finish1, int start2, int finish2)
 	{
 		//int size1 = (finish1 - start1) + 1;
 		//int size2 = (finish2 - start2) + 1;
@@ -226,8 +223,3 @@ public:
 
 
 };
-
-
-
-
-
