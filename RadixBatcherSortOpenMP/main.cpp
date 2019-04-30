@@ -6,7 +6,7 @@
 
 int main()
 {
-	int size = 16;
+	int size = 10000000;
 	srand(time(NULL));
 
 	std::vector<int> mainArr(size);
@@ -135,25 +135,26 @@ int main()
 	dtp = t2 - t1;
 		if (CheckResult(arr, tmp))
 		{
-			std::cout << "Correct result for parallel version" << std::endl;
+			std::cout << "Correct result for omp parallel version" << std::endl;
 		}
 	
 		else
 		{
-			std::cout << "Incorrect result for parallel version" << std::endl;
+			std::cout << "Incorrect result for omp parallel version" << std::endl;
 		}
 
-		std::cout << "Time = " << dtp << " seconds"<< std::endl;
-		std::cout << "Acceleration = " << dts / dtp << std::endl;
+		std::cout << "OMP Time = " << dtp << " seconds"<< std::endl;
+		std::cout << "OMP Acceleration = " << dts / dtp << std::endl;
 
 
 
 		/////////////////////////////TBB VERSION//////////////////////////////////////////
-		
+		threadsNum = 4;
 		tbb::task_scheduler_init init(threadsNum);
 
 		t1 = omp_get_wtime();
-		ParallelSort& task = *new(tbb::task::allocate_root()) ParallelSort(tbbArray, tbbTmp, size, size / 100);
+		ParallelSort& task = *new(tbb::task::allocate_root()) ParallelSort(tbbArray, tbbTmp, size, size / threadsNum);
+		tbb::task::spawn_root_and_wait(task);
 		t2 = omp_get_wtime();
 		double tbbTime = t2 - t1;
 
@@ -176,17 +177,17 @@ int main()
 			std::cout << "Incorrect result for tbb version" << std::endl;
 		}
 
-		std::cout << "Time = " << tbbTime << std::endl;
-		std::cout << "Acceleration = " << dts / tbbTime << std::endl;
-		for (int i = 0; i < size; i++)
-		{
-			std::cout << mainArr[i] << " ";
-		}
-		std::cout << std::endl;
-		for (int i = 0; i < size; i++)
-		{
-			std::cout << tbbArray[i] <<" ";
-		}
-		std::cout << std::endl;
+		std::cout << "TBB Time = " << tbbTime << std::endl;
+		std::cout << "TBB Acceleration = " << dts / tbbTime << std::endl;
+		//for (int i = 0; i < size; i++)
+		//{
+		//	std::cout << mainArr[i] << " ";
+		//}
+		//std::cout << std::endl;
+		//for (int i = 0; i < size; i++)
+		//{
+		//	std::cout << tbbArray[i] <<" ";
+		//}
+		//std::cout << std::endl;
 	return 0;
 }

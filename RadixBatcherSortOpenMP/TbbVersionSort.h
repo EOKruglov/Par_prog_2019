@@ -160,7 +160,8 @@ public:
 				std::swap(arr[2 * i], arr[2 * i - 1]);
 			}
 	}
-};
+};
+
 
 
 class ParallelSort :public tbb::task
@@ -204,7 +205,8 @@ public:
 
 
 			tbb::parallel_for(tbb::blocked_range<int>(1, (size + 1) / 2),
-				SimpleComparator(arr, size));
+				SimpleComparator(arr, size));
+
 		}
 
 		return NULL;
